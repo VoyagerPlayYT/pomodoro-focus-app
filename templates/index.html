@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Study & Pomodoro Focus — Трекер фокуса и продуктивности</title>
+    <title>Smart Study & Pomodoro Focus • VoyagerTeam Lab</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
                     colors: {
-                        zen: {
-                            bg: '#0F1117',
-                            card: '#161922',
-                            border: '#242938',
-                            focus: '#818CF8',
-                            break: '#34D399',
-                            long: '#38BDF8'
+                        ruby: {
+                            bg: '#12090D',
+                            surface: 'rgba(28, 14, 20, 0.72)',
+                            rose: '#F43F5E',
+                            wine: '#FB7185',
+                            border: 'rgba(255, 255, 255, 0.08)'
                         }
                     }
                 }
@@ -26,76 +37,140 @@
         }
     </script>
     <style>
+        :root {
+            --accent: #F43F5E;
+            --accent-wine: #FB7185;
+            --accent-glow: rgba(244, 63, 94, 0.25);
+            --bg-tint: #12090D;
+        }
+        body {
+            background-color: var(--bg-tint);
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(244, 63, 94, 0.16), transparent 70%),
+                radial-gradient(circle at 100% 100%, rgba(251, 113, 133, 0.08), transparent 50%);
+            background-attachment: fixed;
+            color: #F8FAFC;
+        }
+        .bento-card {
+            background: rgba(28, 14, 20, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(244, 63, 94, 0.35);
+            box-shadow: 0 12px 30px -10px rgba(244, 63, 94, 0.2);
+        }
+        .glass-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
         .circle-progress {
             transition: stroke-dashoffset 0.8s ease-in-out;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #12090D; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F43F5E; }
     </style>
 </head>
-<body class="bg-[#0F1117] text-slate-100 min-h-screen flex flex-col font-sans select-none">
-    <!-- Header -->
-    <header class="border-b border-[#242938] bg-[#161922]/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 to-rose-500 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/20">
-                    🍅
+<body class="min-h-screen font-sans flex flex-col antialiased selection:bg-rose-500/20 selection:text-rose-300">
+
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-50 border-b border-white/5 bg-[#12090D]/85 backdrop-blur-xl">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-rose-500 to-pink-400 flex items-center justify-center text-slate-950 shadow-lg shadow-rose-500/25">
+                    <i data-lucide="timer" class="w-5 h-5 stroke-[2.5]"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight">Smart Study & Focus Pro</h1>
-                    <p class="text-xs text-slate-400">Таймер глубокой концентрации, звуковой фон и аналитика</p>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-base tracking-tight text-white">Smart Study & Pomodoro</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold tracking-wider">FOCUS PRO</span>
+                        <span class="hidden sm:inline-flex text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/10">VoyagerTeam</span>
+                    </div>
+                    <p class="text-xs text-slate-400 flex items-center space-x-1.5">
+                        <i data-lucide="brain" class="w-3.5 h-3.5 text-rose-400"></i>
+                        <span>Глубокая концентрация, фоновые звуки и аналитика</span>
+                    </p>
                 </div>
             </div>
-            <!-- Ambient sound toggle -->
-            <div class="flex items-center space-x-2">
-                <button onclick="toggleAmbientNoise()" id="ambientBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center space-x-2 border border-slate-700 transition">
-                    <span id="ambientIcon">🌧️</span>
-                    <span id="ambientText">Звук дождя (Выкл)</span>
+
+            <!-- Header Right -->
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleAmbientNoise()" id="ambientBtn" class="glass-pill px-3.5 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-white/10 border-white/10 flex items-center space-x-2 transition-all">
+                    <i data-lucide="cloud-rain" class="w-4 h-4 text-sky-400"></i>
+                    <span id="ambientText">Шум дождя (Выкл)</span>
                 </button>
+                <div class="glass-pill px-3 py-1.5 rounded-full text-xs flex items-center space-x-2 text-emerald-400 border-emerald-500/30">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="font-mono font-medium">READY</span>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Left: Pomodoro Timer Core (7 cols) -->
-        <div class="lg:col-span-7 bg-[#161922] border border-[#242938] rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden">
-            <!-- Mode Switcher -->
-            <div class="flex p-1.5 rounded-2xl bg-[#0F1117] border border-[#242938] space-x-1">
-                <button onclick="setMode('focus', 25)" id="btnModeFocus" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow">
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Pomodoro Core Timer Bento Card (7 cols) -->
+        <div class="lg:col-span-7 bento-card p-6 sm:p-8 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden">
+            <!-- Ambient Radial Glow -->
+            <div class="absolute -right-8 -top-8 w-44 h-44 bg-rose-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Mode Switcher Pills -->
+            <div class="flex flex-wrap p-1.5 rounded-2xl bg-black/40 border border-white/5 gap-1 z-10">
+                <button onclick="setMode('focus', 25)" id="btnModeFocus" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-slate-950 shadow-lg shadow-rose-500/20">
                     🧠 Учёба (25м)
                 </button>
-                <button onclick="setMode('shortBreak', 5)" id="btnModeShort" class="px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="setMode('shortBreak', 5)" id="btnModeShort" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white">
                     ☕ Отдых (5м)
                 </button>
-                <button onclick="setMode('longBreak', 15)" id="btnModeLong" class="px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="setMode('longBreak', 15)" id="btnModeLong" class="px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white">
                     🌴 Перерыв (15м)
                 </button>
-                <button onclick="setMode('quick', 1)" id="btnModeQuick" class="px-3 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+                <button onclick="setMode('quick', 1)" id="btnModeQuick" class="px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white">
                     ⚡ 1м тест
                 </button>
             </div>
 
-            <!-- Circular Timer -->
-            <div class="relative w-64 h-64 sm:w-72 sm:h-72 my-6 flex items-center justify-center">
+            <!-- Giant Circular SVG Timer -->
+            <div class="relative w-64 h-64 sm:w-76 sm:h-76 my-8 flex items-center justify-center z-10">
                 <svg class="w-full h-full" viewBox="0 0 200 200">
-                    <circle cx="100" cy="100" r="88" stroke="#1F2432" stroke-width="8" fill="transparent" />
-                    <circle id="progressCircle" cx="100" cy="100" r="88" stroke="#6366F1" stroke-width="8"
+                    <defs>
+                        <linearGradient id="roseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#F43F5E" />
+                            <stop offset="100%" stop-color="#FB7185" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="100" cy="100" r="88" stroke="rgba(255, 255, 255, 0.05)" stroke-width="8" fill="transparent" />
+                    <circle id="progressCircle" cx="100" cy="100" r="88" stroke="url(#roseGradient)" stroke-width="8"
                         stroke-linecap="round" fill="transparent" stroke-dasharray="552.92" stroke-dashoffset="0" class="circle-progress" />
                 </svg>
                 <div class="absolute flex flex-col items-center">
                     <span id="timerDisplay" class="text-5xl sm:text-6xl font-black font-mono tracking-tight text-white">25:00</span>
-                    <span id="timerSubtext" class="text-xs font-semibold text-indigo-400 uppercase tracking-widest mt-1">Режим концентрации</span>
+                    <span id="timerSubtext" class="text-[11px] font-mono font-bold text-rose-400 uppercase tracking-widest mt-2 flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span>
+                        <span>Режим концентрации</span>
+                    </span>
                 </div>
             </div>
 
-            <!-- Controls -->
-            <div class="flex items-center space-x-4">
-                <button onclick="toggleTimer()" id="mainPlayBtn" class="px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-base shadow-xl shadow-indigo-600/30 transition transform active:scale-95">
-                    Старт фокуса
+            <!-- Timer Controls -->
+            <div class="flex items-center space-x-4 z-10">
+                <button onclick="toggleTimer()" id="mainPlayBtn" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 text-slate-950 font-extrabold text-sm shadow-xl shadow-rose-500/25 transition-all transform active:scale-95 flex items-center space-x-2">
+                    <i data-lucide="play" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i>
+                    <span>Старт фокуса</span>
                 </button>
-                <button onclick="resetTimer()" class="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm transition">
-                    🔄 Сброс
+                <button onclick="resetTimer()" class="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-300 text-sm border border-white/5 transition-colors">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
@@ -103,50 +178,103 @@
         <!-- Right: Tasks & Weekly Stats (5 cols) -->
         <div class="lg:col-span-5 space-y-6">
             <!-- Weekly Progress Chart -->
-            <div class="bg-[#161922] border border-[#242938] rounded-3xl p-6 shadow-xl">
+            <div class="bento-card p-6 shadow-xl flex flex-col">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-sm text-slate-200">📊 Прогресс за неделю (минуты фокуса)</h3>
-                    <span class="text-xs font-mono text-emerald-400 font-bold" id="streakBadge">🔥 7 дней подряд</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <h3 class="font-bold text-sm text-white">Прогресс за неделю</h3>
+                    </div>
+                    <span class="text-xs font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20" id="streakBadge">🔥 7 дней подряд</span>
                 </div>
-                <div class="h-40">
+                <div class="h-40 w-full">
                     <canvas id="weeklyChart"></canvas>
                 </div>
-                <div class="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-[#242938] text-center">
-                    <div>
-                        <div class="text-xl font-black font-mono text-indigo-400" id="totalHoursVal">0 ч</div>
-                        <div class="text-[10px] text-slate-400 uppercase font-bold">Часов учёбы</div>
+                <div class="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/5 text-center">
+                    <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
+                        <div class="text-2xl font-black font-mono text-rose-400" id="totalHoursVal">0 ч</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Часов учёбы</div>
                     </div>
-                    <div>
-                        <div class="text-xl font-black font-mono text-rose-400" id="totalSessionsVal">0</div>
-                        <div class="text-[10px] text-slate-400 uppercase font-bold">Сессий закрыто</div>
+                    <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
+                        <div class="text-2xl font-black font-mono text-pink-400" id="totalSessionsVal">0</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Сессий закрыто</div>
                     </div>
                 </div>
             </div>
 
             <!-- Daily Study Tasks Checklist -->
-            <div class="bg-[#161922] border border-[#242938] rounded-3xl p-6 shadow-xl space-y-4">
+            <div class="bento-card p-6 shadow-xl space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-sm text-slate-200">🎯 Задачи на сегодня</h3>
-                    <span class="text-xs text-slate-400">Помодоро-план</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                            <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <h3 class="font-bold text-sm text-white">Задачи на сегодня</h3>
+                    </div>
+                    <span class="text-xs text-slate-400 font-mono">План фокуса</span>
                 </div>
 
                 <form onsubmit="handleAddTask(event)" class="flex gap-2">
                     <input type="text" id="taskInput" placeholder="Добавить цель занятия..." required
-                        class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-xl text-xs font-bold transition">
-                        +
+                        class="flex-1 bg-black/40 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                    <button type="submit" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-lg shadow-rose-500/20 flex items-center justify-center">
+                        <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
                     </button>
                 </form>
 
-                <div id="tasksList" class="space-y-2 max-h-48 overflow-y-auto">
+                <div id="tasksList" class="space-y-2.5 max-h-48 overflow-y-auto">
                     <!-- Tasks stream -->
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-5 px-6 text-center text-xs text-slate-500 font-mono mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>Smart Study & Pomodoro Focus • VoyagerTeam Lab</span>
+            <span class="text-slate-400">Синхронизация прогресса с домашним сервером</span>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
     <script>
-        // Web Audio Synthesizer (Zero External Audio Files)
+        // Init Lucide
+        lucide.createIcons();
+
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center space-x-2.5 px-4 py-3 rounded-xl bento-card text-xs font-sans text-slate-200 shadow-xl border border-white/15 transition-all duration-300 transform translate-y-4 opacity-0';
+            
+            let iconName = 'info';
+            let iconColor = 'text-rose-400';
+            if (type === 'success') { iconName = 'check-circle-2'; iconColor = 'text-emerald-400'; }
+            if (type === 'warning') { iconName = 'alert-triangle'; iconColor = 'text-amber-400'; }
+            if (type === 'error') { iconName = 'alert-circle'; iconColor = 'text-rose-400'; }
+
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-4 h-4 ${iconColor}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons({ targets: [toast] });
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Web Audio Synthesizer
         let audioCtx = null;
         let ambientNode = null;
         let isAmbientPlaying = false;
@@ -161,14 +289,13 @@
             return audioCtx;
         }
 
-        // Play relaxing Tibetan bowl chime
         function playChime() {
             const ctx = getAudioContext();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
 
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(528, ctx.currentTime); // 528 Hz Solfeggio frequency
+            osc.frequency.setValueAtTime(528, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 1.5);
 
             gain.gain.setValueAtTime(0.4, ctx.currentTime);
@@ -181,14 +308,12 @@
             osc.stop(ctx.currentTime + 3.0);
         }
 
-        // Procedural Rain / White Noise Generator
         function toggleAmbientNoise() {
             const ctx = getAudioContext();
             const btn = document.getElementById('ambientBtn');
             const txt = document.getElementById('ambientText');
 
             if (!isAmbientPlaying) {
-                // Generate pink/brownian noise for rain sound
                 const bufferSize = ctx.sampleRate * 2;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -197,7 +322,7 @@
                     const white = Math.random() * 2 - 1;
                     data[i] = (lastOut + (0.02 * white)) / 1.02;
                     lastOut = data[i];
-                    data[i] *= 2.5; // Gain adjustment
+                    data[i] *= 2.5;
                 }
 
                 ambientNode = ctx.createBufferSource();
@@ -217,13 +342,14 @@
 
                 ambientNode.start();
                 isAmbientPlaying = true;
-                btn.className = 'px-3 py-1.5 rounded-xl bg-emerald-600/30 border border-emerald-500/50 text-emerald-300 text-xs flex items-center space-x-2 transition';
-                txt.innerText = 'Звук дождя (Вкл 🔊)';
+                btn.className = 'glass-pill px-3.5 py-1.5 rounded-xl text-xs text-sky-300 border-sky-500/40 flex items-center space-x-2 transition-all';
+                txt.innerText = 'Шум дождя (Вкл 🌧️)';
+                showToast('Включён процедурный расслабляющий шум дождя', 'info');
             } else {
                 if (ambientNode) ambientNode.stop();
                 isAmbientPlaying = false;
-                btn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center space-x-2 border border-slate-700 transition';
-                txt.innerText = 'Звук дождя (Выкл)';
+                btn.className = 'glass-pill px-3.5 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-white/10 border-white/10 flex items-center space-x-2 transition-all';
+                txt.innerText = 'Шум дождя (Выкл)';
             }
         }
 
@@ -241,35 +367,35 @@
             remainingSeconds = totalSeconds;
             clearInterval(timerInterval);
             isRunning = false;
-            document.getElementById('mainPlayBtn').innerText = 'Старт фокуса';
+            document.getElementById('mainPlayBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i><span>Старт фокуса</span>`;
 
-            // Button highlights
             ['btnModeFocus', 'btnModeShort', 'btnModeLong', 'btnModeQuick'].forEach(id => {
-                document.getElementById(id).className = 'px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+                document.getElementById(id).className = 'px-4 py-2 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-white';
             });
 
             const sub = document.getElementById('timerSubtext');
             const circle = document.getElementById('progressCircle');
 
             if (mode === 'focus') {
-                document.getElementById('btnModeFocus').className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow';
+                document.getElementById('btnModeFocus').className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-slate-950 shadow-lg shadow-rose-500/20';
                 sub.innerText = 'Режим концентрации';
-                circle.setAttribute('stroke', '#6366F1');
+                circle.setAttribute('stroke', '#F43F5E');
             } else if (mode === 'shortBreak') {
-                document.getElementById('btnModeShort').className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow';
+                document.getElementById('btnModeShort').className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 shadow-lg shadow-emerald-500/20';
                 sub.innerText = 'Короткий отдых ☕';
                 circle.setAttribute('stroke', '#10B981');
             } else if (mode === 'longBreak') {
-                document.getElementById('btnModeLong').className = 'px-4 py-2 rounded-xl text-xs font-bold transition bg-sky-600 text-white shadow';
+                document.getElementById('btnModeLong').className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-sky-500 to-blue-500 text-slate-950 shadow-lg shadow-sky-500/20';
                 sub.innerText = 'Большая перезагрузка 🌴';
                 circle.setAttribute('stroke', '#38BDF8');
             } else {
-                document.getElementById('btnModeQuick').className = 'px-3 py-2 rounded-xl text-xs font-bold transition bg-amber-600 text-white shadow';
+                document.getElementById('btnModeQuick').className = 'px-3 py-2 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20';
                 sub.innerText = 'Тест таймера ⚡';
                 circle.setAttribute('stroke', '#F59E0B');
             }
 
             updateDisplay();
+            lucide.createIcons();
         }
 
         function toggleTimer() {
@@ -278,31 +404,33 @@
             if (isRunning) {
                 clearInterval(timerInterval);
                 isRunning = false;
-                btn.innerText = 'Продолжить';
+                btn.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i><span>Продолжить</span>`;
             } else {
                 isRunning = true;
-                btn.innerText = 'Пауза';
+                btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i><span>Пауза</span>`;
                 timerInterval = setInterval(() => {
                     remainingSeconds--;
                     updateDisplay();
                     if (remainingSeconds <= 0) {
                         clearInterval(timerInterval);
                         isRunning = false;
-                        btn.innerText = 'Старт фокуса';
+                        btn.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i><span>Старт фокуса</span>`;
                         playChime();
                         recordCompletedSession();
-                        alert('🎉 Время сессии истекло! Отличная концентрация.');
+                        showToast('🎉 Время сессии истекло! Отличная концентрация.', 'success');
                     }
                 }, 1000);
             }
+            lucide.createIcons();
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
             remainingSeconds = totalSeconds;
-            document.getElementById('mainPlayBtn').innerText = 'Старт фокуса';
+            document.getElementById('mainPlayBtn').innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-slate-950 stroke-[2.5]"></i><span>Старт фокуса</span>`;
             updateDisplay();
+            lucide.createIcons();
         }
 
         function updateDisplay() {
@@ -310,7 +438,6 @@
             const s = remainingSeconds % 60;
             document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
 
-            // Circular progress
             const fraction = remainingSeconds / totalSeconds;
             const offset = circleCircumference * (1 - fraction);
             document.getElementById('progressCircle').style.strokeDashoffset = offset;
@@ -360,7 +487,7 @@
                     datasets: [{
                         label: 'Минут фокуса',
                         data: values,
-                        backgroundColor: '#6366F1',
+                        backgroundColor: '#F43F5E',
                         borderRadius: 6
                     }]
                 },
@@ -368,8 +495,8 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { beginAtZero: true, grid: { color: '#242938' }, ticks: { color: '#64748B' } },
-                        x: { grid: { display: false }, ticks: { color: '#94A3B8' } }
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#94A3B8', font: { family: 'Inter', size: 10 } } }
                     },
                     plugins: { legend: { display: false } }
                 }
@@ -383,18 +510,21 @@
                 const container = document.getElementById('tasksList');
 
                 container.innerHTML = data.tasks.map(t => `
-                    <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
-                        <div class="flex items-center space-x-2">
+                    <div class="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs hover:border-rose-500/30 transition-all">
+                        <div class="flex items-center space-x-2.5">
                             <input type="checkbox" ${t.is_completed ? 'checked' : ''} onchange="toggleTask(${t.id})"
-                                class="w-4 h-4 text-indigo-600 rounded border-slate-700 focus:ring-indigo-500 cursor-pointer">
-                            <span class="${t.is_completed ? 'line-through text-slate-500' : 'text-slate-200'}">${escapeHtml(t.title)}</span>
+                                class="w-4 h-4 text-rose-600 rounded border-white/20 bg-black/40 focus:ring-0 cursor-pointer">
+                            <span class="${t.is_completed ? 'line-through text-slate-500' : 'text-slate-200 font-medium'}">${escapeHtml(t.title)}</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-[10px] text-rose-400 font-mono">🍅 ${t.completed_pomodoros}/${t.estimated_pomodoros}</span>
-                            <button onclick="deleteTask(${t.id})" class="text-slate-500 hover:text-rose-400">✕</button>
+                            <span class="text-[10px] text-rose-400 font-mono font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">🍅 ${t.completed_pomodoros}/${t.estimated_pomodoros}</span>
+                            <button onclick="deleteTask(${t.id})" class="text-slate-500 hover:text-rose-400 p-1 transition-colors">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                     </div>
                 `).join('');
+                lucide.createIcons();
             } catch (e) {}
         }
 
@@ -411,6 +541,7 @@
             });
 
             input.value = '';
+            showToast(`Задача "${title}" добавлена в фокус-план!`, 'success');
             fetchTasks();
         }
 
@@ -421,6 +552,7 @@
 
         async function deleteTask(id) {
             await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+            showToast('Задача удалена', 'warning');
             fetchTasks();
         }
 
